@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Search</title>
+</head>
+<body>
+
+<h2>Search</h2>
+<input type="text" id="searchInput" placeholder="Type to search..." onkeyup="handleSearch()" />
+
+<ul id="resultsList"></ul>
+
+<script>
+    async function handleSearch() {
+        const query = document.getElementById("searchInput").value;
+
+        // Clear previous results
+        const resultsList = document.getElementById("resultsList");
+        resultsList.innerHTML = '';
+
+        // Make sure we don't fetch for empty input
+        if (query.trim() === "") return;
+
+        try {
+            const response = await fetch(`http://localhost:5101/api/search?text=${query}`);
+            const results = await response.json();
+
+            results.forEach(item => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${item.name} (Entity type: ${item.type})`;
+                resultsList.appendChild(listItem);
+            });
+        } catch (error) {
+            console.error("Error fetching search results:", error);
+        }
+    }
+</script>
+
+</body>
+</html>
